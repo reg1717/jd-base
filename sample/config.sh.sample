@@ -1,15 +1,15 @@
-## Version: v3.8.0
-## Date: 2020-12-30
-## Update Content: 增加企业微信应用消息推送QYWX_AM的变量。
+## Version: v3.20.0
+## Date: 2021-01-22
+## Update Content: 京喜农场互助码格式变化，请使用 bash jd.sh jd_get_share_code now 获取新的助力码，并编辑京喜农场助力码配置。请特别注意：京喜农场 种植种子发生变化的时候，互助码也会变！！(由于本次有参数格式变化，所以版本号中第二位数字发生变化)
 
 ## 上面版本号中，如果第2位数字有变化，那么代表增加了新的参数，如果只有第3位数字有变化，仅代表更新了注释，没有增加新的参数，可更新可不更新
 ## 如需更新，请参考WIKI（https://github.com/EvineDeng/jd-base/wiki）中"如何更新配置文件"部分的操作说明，进行智能比对后修改。
 
 ################################## 说明 ##################################
-## 以下配置中，带有 export 申明的，均由lxk0301大佬定义，详见：https://github.com/lxk0301/jd_scripts/blob/master/githubAction.md#%E4%B8%8B%E6%96%B9%E6%8F%90%E4%BE%9B%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84-secrets%E5%85%A8%E9%9B%86%E5%90%88
-## 其他互助码，考虑到直接按lxk0301大佬定义的变量去填的话，一是不方便记忆，二是容易搞混，所以最终的变量将由脚本去组合，你只要按注释去填即可
+## 以下配置中，带有 export 申明的，均由LXK9301大佬定义，详见：https://github.com/LXK9301/jd_scripts/blob/master/githubAction.md#%E4%B8%8B%E6%96%B9%E6%8F%90%E4%BE%9B%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84-secrets%E5%85%A8%E9%9B%86%E5%90%88
+## 其他互助码，考虑到直接按LXK9301大佬定义的变量去填的话，一是不方便记忆，二是容易搞混，所以最终的变量将由脚本去组合，你只要按注释去填即可
 ## 除此之外，还额外增加了是否自动删除失效任务AutoDelCron、是否自动增加新任务AutoAddCron、删除旧日志时间RmLogDaysAgo、随机延迟启动任务RandomDelay、是否添加自定义脚本EnableExtraShell五个人性化的设置供选择
-## 所有赋值等号两边不能有空格，所有的值请一律在两侧添加半角的双引号
+## 所有赋值等号两边不能有空格，所有的值请一律在两侧添加半角的双引号，如果变量值中含有双引号，则外侧改为一对半角的单引号。
 ## 所有的赋值都可以参考 “定义东东萌宠是否静默运行” 部分，在不同时间设置不同的值，以达到你想要的效果，具体判断条件如下：
 ## $(date "+%d") 当前的日期，如：13
 ## $(date "+%w") 当前是星期几，如：3
@@ -21,7 +21,8 @@
 
 ################################## 定义Cookie（必填） ##################################
 ## 请依次填入每个用户的Cookie，Cookie的具体形式（只有pt_key字段和pt_pin字段，没有其他字段）：pt_key=xxxxxxxxxx;pt_pin=xxxx;
-## 获取Cookie的具体教程：https://github.com/lxk0301/jd_scripts/wiki/GetCookies
+## 1. 如果是通过控制面板编辑本文件，点击页面上方“扫码获取Cookie”即可获取，此方式获取的Cookie有效期为3个月
+## 2. 还可以通过浏览器开发工具获取，此方式获得的Cookie只有1个月有效期，教程：https://github.com/LXK9301/jd_scripts/wiki/GetCookies
 ## 必须按数字顺序1、2、3、4...依次编号下去，例子只有6个，超出6个你继续往下编号即可
 ## 不允许有汉字，如果ID有汉字，请在PC浏览器上获取Cookie，会自动将汉字转换为URL编码
 Cookie1=""
@@ -34,16 +35,19 @@ Cookie6=""
 
 ################################## 定义是否自动删除失效的脚本与定时任务（选填） ##################################
 ## 有的时候，某些JS脚本只在特定的时间有效，过了时间就失效了，需要自动删除失效的本地定时任务，则设置为 "true" ，否则请设置为 "false"
-## 本功能生效时，会自动从 lxk0301/jd_scripts 仓库中的 docker/crontab_list.sh 文件中读取删除的任务
-## 本功能生效时，脚本只会删除一整行失效的定时任务，不会修改其他现有任务，所以任何时候，你都可以自己调整你的crontab.list
+## 检测文件：LXK9301/jd_scripts 仓库中的 docker/crontab_list.sh，和 shylocks/Loon 仓库中的 docker/crontab_list.sh
+## 当设置为 "true" 时，会自动从检测文件中读取比对删除的任务（识别以“jd_”、“jr_”、“jx_”开头的任务）
+## 当设置为 "true" 时，脚本只会删除一整行失效的定时任务，不会修改其他现有任务，所以任何时候，你都可以自己调整你的crontab.list
+## 当设置为 "true" 时，如果你有添加额外脚本是以“jd_”“jr_”“jx_”开头的，如检测文件中，会被删除，不是以“jd_”“jr_”“jx_”开头的任务则不受影响
 AutoDelCron="true"
 
 
 ################################## 定义是否自动增加新的本地定时任务（选填） ##################################
-## lxk0301 大佬会在有需要的时候，增加定时任务，如需要本地自动增加新的定时任务，则设置为 "true" ，否则请设置为 "false"
-## 当设置为 "true" 时，如果检测到 lxk0301/jd_scripts 仓库中的 docker/crontab_list.sh 中有增加新的定时任务，那么在本地也增加
-## 本功能生效时，会自动从 lxk0301/jd_scripts 仓库中的 docker/crontab_list.sh 文件新增加的任务中读取时间，该时间为北京时间
-## 本功能生效时，脚本只会增加新的定时任务，不会修改其他现有任务，所以任何时候，你都可以自己调整你的crontab.list
+## LXK9301 大佬会在有需要的时候，增加定时任务，如需要本地自动增加新的定时任务，则设置为 "true" ，否则请设置为 "false"
+## 检测文件：LXK9301/jd_scripts 仓库中的 docker/crontab_list.sh，和 shylocks/Loon 仓库中的 docker/crontab_list.sh
+## 当设置为 "true" 时，如果检测到检测文件中有增加新的定时任务，那么在本地也增加（识别以“jd_”、“jr_”、“jx_”开头的任务）
+## 当设置为 "true" 时，会自动从检测文件新增加的任务中读取时间，该时间为北京时间
+## 当设置为 "true" 时，脚本只会增加新的定时任务，不会修改其他现有任务，所以任何时候，你都可以自己调整你的crontab.list
 AutoAddCron="true"
 
 
@@ -60,52 +64,52 @@ RandomDelay="300"
 
 
 ################################## 定义User-Agent（选填） ##################################
-## 自定义lxk0301大佬仓库里京东系列js脚本的User-Agent，不懂不知不会User-Agent的请不要随意填写内容，随意填写了出错概不负责
-## 相关讨论详见https://github.com/lxk0301/jd_scripts/issues/127，如需使用，请自行解除下一行注释
+## 自定义LXK9301大佬仓库里京东系列js脚本的User-Agent，不懂不知不会User-Agent的请不要随意填写内容，随意填写了出错概不负责
+## 如需使用，请自行解除下一行注释
 # export JD_USER_AGENT=""
 
 
 ################################## 定义通知TOKEN（选填） ##################################
 ## 想通过什么渠道收取通知，就填入对应渠道的值
-## ServerChan，教程：http://sc.ftqq.com/3.version
+## 1. ServerChan，教程：http://sc.ftqq.com/3.version
 export PUSH_KEY=""
 
-## 1. BARK，教程（看BARK_PUSH和BARK_SOUND的说明）：https://github.com/lxk0301/jd_scripts/blob/master/githubAction.md#%E4%B8%8B%E6%96%B9%E6%8F%90%E4%BE%9B%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84-secrets%E5%85%A8%E9%9B%86%E5%90%88
+## 2. BARK，教程（看BARK_PUSH和BARK_SOUND的说明）：https://github.com/LXK9301/jd_scripts/blob/master/githubAction.md#%E4%B8%8B%E6%96%B9%E6%8F%90%E4%BE%9B%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84-secrets%E5%85%A8%E9%9B%86%E5%90%88
 export BARK_PUSH=""
 export BARK_SOUND=""
 
-## 2. Telegram，如需使用，TG_BOT_TOKEN和TG_USER_ID必须同时赋值，教程：https://github.com/lxk0301/jd_scripts/blob/master/backUp/TG_PUSH.md
+## 3. Telegram，如需使用，TG_BOT_TOKEN和TG_USER_ID必须同时赋值，教程：https://github.com/LXK9301/jd_scripts/blob/master/backUp/TG_PUSH.md
 export TG_BOT_TOKEN=""
 export TG_USER_ID=""
 
-## 3. 钉钉，教程（看DD_BOT_TOKEN和DD_BOT_SECRET部分）：https://github.com/lxk0301/jd_scripts/blob/master/githubAction.md#%E4%B8%8B%E6%96%B9%E6%8F%90%E4%BE%9B%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84-secrets%E5%85%A8%E9%9B%86%E5%90%88
+## 4. 钉钉，教程（看DD_BOT_TOKEN和DD_BOT_SECRET部分）：https://github.com/LXK9301/jd_scripts/blob/master/githubAction.md#%E4%B8%8B%E6%96%B9%E6%8F%90%E4%BE%9B%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84-secrets%E5%85%A8%E9%9B%86%E5%90%88
 export DD_BOT_TOKEN=""
 export DD_BOT_SECRET=""
 
-## 4. iGot聚合推送，支持多方式推送，填写iGot的推送key。教程：https://wahao.github.io/Bark-MP-helper/#/
+## 5. iGot聚合推送，支持多方式推送，填写iGot的推送key。教程：https://wahao.github.io/Bark-MP-helper/#/
 export IGOT_PUSH_KEY=""
 
-## 5. 酷推(Cool Push)，向QQ发送推送消息，参考文档：https://cp.xuthus.cc ，其中QQ_MODE的可选项有：send(默认值),group,wx
+## 6. 酷推(Cool Push)，向QQ发送推送消息，参考文档：https://cp.xuthus.cc ，其中QQ_MODE的可选项有（默认send）：send[私聊]、group[群聊]、wx[个微]、ww[企微]、email[邮件]
 export QQ_SKEY=""
 export QQ_MODE=""
 
-## 6. Push Plus，微信扫码登录后一对一推送或一对多推送，参考文档：http://pushplus.hxtrip.com/
+## 7. Push Plus，微信扫码登录后一对一推送或一对多推送，参考文档：http://pushplus.hxtrip.com/
 ## 其中PUSH_PLUS_USER是一对多推送的“群组编码”（一对多推送下面->您的群组(如无则新建)->群组编码）注:(1、需订阅者扫描二维码 2、如果您是创建群组所属人，也需点击“查看二维码”扫描绑定，否则不能接受群组消息推送)，只填PUSH_PLUS_TOKEN默认为一对一推送
 export PUSH_PLUS_TOKEN=""
 export PUSH_PLUS_USER=""
 
-## 7. 企业微信机器人消息推送 webhook 后面的 key，文档：https://work.weixin.qq.com/api/doc/90000/90136/91770
+## 8. 企业微信机器人消息推送 webhook 后面的 key，文档：https://work.weixin.qq.com/api/doc/90000/90136/91770
 export QYWX_KEY=""
 
-## 8. 企业微信应用消息推送的值，文档：https://work.weixin.qq.com/api/doc/90000/90135/90236 
-## 依次填上corpid的值,corpsecret的值,touser的值,agentid的值，注意用,号隔开，例如："wwcff56746d9adwers,B-791548lnzXBE6_BWfxdf3kSTMJr9vFEPKAbh6WERQ,mingcheng,1000001"
+## 9. 企业微信应用消息推送的值，文档：https://work.weixin.qq.com/api/doc/90000/90135/90236 
+## 依次填上corpid的值,corpsecret的值,touser的值,agentid,media_id的值，注意用,号隔开，例如："wwcff56746d9adwers,B-791548lnzXBE6_BWfxdf3kSTMJr9vFEPKAbh6WERQ,mingcheng,1000001,2COXgjH2UIfERF2zxrtUOKgQ9XklUqMdGSWLBoW_lSDAdafat"
 export QYWX_AM=""
 
 
 ################################## 定义每日签到的通知形式（选填） ##################################
 ## js脚本每日签到提供3种通知方式，分别为：
 ## 关闭通知，那么请在下方填入0
-## 简洁通知，那么请在下方填入1，其效果见：https://github.com/lxk0301/jd_scripts/blob/master/icon/bean_sign_simple.jpg
+## 简洁通知，那么请在下方填入1，其效果见：https://github.com/LXK9301/jd_scripts/blob/master/icon/bean_sign_simple.jpg
 ## 原始通知，那么请在下方填入2，如果不填也默认为2，内容比较长，这也是默认通知方式
 NotifyBeanSign=""
 
@@ -115,11 +119,8 @@ NotifyBeanSign=""
 export JD_BEAN_STOP=""
 
 
-################################## 定义东东农场每个人自己的互助码（选填） ##################################
-## 东东农场每个Cookie自己的互助码，可以在运行一次东东农场脚本（jd_fruit）后从日志中查看
-## 约定：MyFruit后面的编号为数字的是提供了Cookie的账号所对应的互助码，编号与Cookie编号一一对应，如MyFruit1、MyFruit2
-## 约定：MyFruit后面的编号为大写字母的是未提供Cookie的账号所对应的互助码（比如你和其他人交换助力时或者多容器之间相互助力时），如MyFruitA、MyFruitB
-## 这里的码只是为了下面“定义东东农场要为哪些人助力”服务的
+################################## 定义东东农场互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
 MyFruit1=""
 MyFruit2=""
 MyFruit3=""
@@ -129,13 +130,6 @@ MyFruit6=""
 MyFruitA=""
 MyFruitB=""
 
-
-################################## 定义东东农场要为哪些人助力（选填） ##################################
-## 1.每个Cookie要为谁助力，填入对应MyFruit系列变量名即可，用 @ 分隔每个变量名
-## 2.比如：ForOtherFruit1="${MyFruit2}@${MyFruit3}@${MyFruit5}@${MyFruitA}"，含义是Cookie1的账户将为Cookie2、Cookie3、Cookie5的账户以及没有提供Cookie只提供了助力码的A用户提供助力
-## 3.Cookie定义了多少个，ForOtherFruit系列变量就多少个有效（从编号1开始计）
-## 4.可以不赋值，这种情况下，将自动随机给他人助力
-## 5.具体填法示例图：https://github.com/EvineDeng/jd-base/wiki/Picture/Sharecodes.png
 ForOtherFruit1=""
 ForOtherFruit2=""
 ForOtherFruit3=""
@@ -144,11 +138,8 @@ ForOtherFruit5=""
 ForOtherFruit6=""
 
 
-################################## 定义东东萌宠每个人自己的互助码（选填） ##################################
-## 东东萌宠每个Cookie自己的互助码，可以在运行一次东东萌宠脚本（jd_pet）后从日志中查看
-## 约定：MyPet后面的编号为数字的是提供了Cookie的账号所对应的互助码，编号与Cookie编号一一对应，如MyPet1、MyPet2
-## 约定：MyPet后面的编号为大写字母的是未提供Cookie的账号所对应的互助码（比如你和其他人交换助力时或者多容器之间相互助力时），如MyPetA、MyPetB
-## 这里的码只是为了下面“定义东东萌宠要为哪些人助力”服务的
+################################## 定义东东萌宠互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
 MyPet1=""
 MyPet2=""
 MyPet3=""
@@ -158,13 +149,6 @@ MyPet6=""
 MyPetA=""
 MyPetB=""
 
-
-################################## 定义东东萌宠要为哪些人助力（选填） ##################################
-## 1.每个Cookie要为谁助力，填入对应MyPet系列变量名即可，用 @ 分隔每个变量名
-## 2.比如：ForOtherPet1="${MyPet2}@${MyPet3}@${MyPetA}"，含义是Cookie1的账户将为Cookie2、Cookie3的账户以及没有提供Cookie只提供了互助码的A用户提供助力
-## 3.Cookie定义了多少个，ForOtherPet系列变量就多少个有效（从编号1开始计）
-## 4.可以不赋值，这种情况下，将自动随机给他人助力
-## 5.具体填法示例图：https://github.com/EvineDeng/jd-base/wiki/Picture/Sharecodes.png
 ForOtherPet1=""
 ForOtherPet2=""
 ForOtherPet3=""
@@ -173,11 +157,8 @@ ForOtherPet5=""
 ForOtherPet6=""
 
 
-################################## 定义种豆得豆每个人自己的互助码（选填） ##################################
-## 种豆得豆每个Cookie自己的互助码，可以在运行一次种豆得豆脚本（jd_plantBean）后从日志中查看
-## 约定：MyBean后面的编号为数字的是提供了Cookie的账号所对应的互助码，编号与Cookie编号一一对应，如MyBean1、MyBean2
-## 约定：MyBean后面的编号为大写字母的是未提供Cookie的账号所对应的互助码（比如你和其他人交换助力时或者多容器之间相互助力时），如MyBeanA、MyBeanB
-## 这里的码只是为了下面“定义种豆得豆要为哪些人助力”服务的
+################################## 定义种豆得豆互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
 MyBean1=""
 MyBean2=""
 MyBean3=""
@@ -187,13 +168,6 @@ MyBean6=""
 MyBeanA=""
 MyBeanB=""
 
-
-################################## 定义种豆得豆要为哪些人助力（选填） ##################################
-## 1.每个Cookie要为谁助力，填入对应MyBean系列变量名即可，用 @ 分隔每个变量名
-## 2.比如：ForOtherBean1="${MyBean2}@${MyBean6}@${MyBeanB}"，含义是Cookie1的账户将为Cookie2、Cookie6的账户以及没有提供Cookie只提供了互助码的B用户提供助力
-## 3.Cookie定义了多少个，ForOtherBean系列变量就多少个有效（从编号1开始计）
-## 4.可以不赋值，这种情况下，将自动随机给他人助力
-## 5.具体填法示例图：https://github.com/EvineDeng/jd-base/wiki/Picture/Sharecodes.png
 ForOtherBean1=""
 ForOtherBean2=""
 ForOtherBean3=""
@@ -202,11 +176,8 @@ ForOtherBean5=""
 ForOtherBean6=""
 
 
-################################## 定义京喜工厂每个人自己的互助码（选填） ##################################
-## 京喜工厂每个Cookie自己的互助码，可以在运行一次京喜工厂脚本（jd_dreamFactory）后从日志中查看
-## 约定：MyDreamFactory后面的编号为数字的是提供了Cookie的账号所对应的互助码，编号与Cookie编号一一对应，如MyDreamFactory1、MyDreamFactory2
-## 约定：MyDreamFactory后面的编号为大写字母的是未提供Cookie的账号所对应的互助码（比如你和其他人交换助力时或者多容器之间相互助力时），如MyDreamFactoryA、MyDreamFactoryB
-## 这里的码只是为了下面“定义京喜工厂要为哪些人助力”服务的
+################################## 定义京喜工厂互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
 MyDreamFactory1=""
 MyDreamFactory2=""
 MyDreamFactory3=""
@@ -216,13 +187,6 @@ MyDreamFactory6=""
 MyDreamFactoryA=""
 MyDreamFactoryB=""
 
-
-################################## 定义京喜工厂要为哪些人助力（选填） ##################################
-## 1.每个Cookie要为谁助力，填入对应MyDreamFactory系列变量名即可，用 @ 分隔每个变量名
-## 2.举例：ForOtherDreamFactory1="${MyDreamFactory3}@${MyDreamFactory5}@${MyDreamFactoryA}"，含义是Cookie1的账户将为Cookie3、Cookie5的账户以及没有提供Cookie只提供了互助码的A用户提供助力
-## 3.Cookie定义了多少个，ForOtherDreamFactory系列变量就多少有效（从编号1开始计）
-## 4.可以不赋值，这种情况下，将自动随机给他人助力
-## 5.具体填法示例图：https://github.com/EvineDeng/jd-base/wiki/Picture/Sharecodes.png
 ForOtherDreamFactory1=""
 ForOtherDreamFactory2=""
 ForOtherDreamFactory3=""
@@ -231,11 +195,8 @@ ForOtherDreamFactory5=""
 ForOtherDreamFactory6=""
 
 
-################################## 定义东东工厂每个人自己的互助码（选填） ##################################
-## 东东工厂每个Cookie自己的互助码，可以在运行一次东东工厂脚本（jd_jdFactory）后从日志中查看
-## 约定：MyJdFactory后面的编号为数字的是提供了Cookie的账号所对应的互助码，编号与Cookie编号一一对应，如MyJdFactory1、MyJdFactory2
-## 约定：MyJdFactory后面的编号为大写字母的是未提供Cookie的账号所对应的互助码（比如你和其他人交换助力时或者多容器之间相互助力时），如MyJdFactoryA、MyJdFactoryB
-## 这里的码只是为了下面“定义东东工厂要为哪些人助力”服务的
+################################## 定义东东工厂互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
 MyJdFactory1=""
 MyJdFactory2=""
 MyJdFactory3=""
@@ -245,13 +206,6 @@ MyJdFactory6=""
 MyJdFactoryA=""
 MyJdFactoryB=""
 
-
-################################## 定义东东工厂要为哪些人助力（选填） ##################################
-## 1.每个Cookie要为谁助力，填入对应MyJdFactory系列变量名即可，用 @ 分隔每个变量名
-## 2.举例：ForOtherJdFactory1="${MyJdFactory3}@${MyJdFactory4}@${MyJdFactoryA}"，含义是Cookie1的账户将为Cookie3、Cookie4的账户以及没有提供Cookie只提供了互助码的A用户提供助力
-## 3.Cookie定义了多少个，ForOtherJdFactory系列变量就多少有效（从编号1开始计）
-## 4.可以不赋值，这种情况下，将自动随机给他人助力
-## 5.具体填法示例图：https://github.com/EvineDeng/jd-base/wiki/Picture/Sharecodes.png
 ForOtherJdFactory1=""
 ForOtherJdFactory2=""
 ForOtherJdFactory3=""
@@ -260,11 +214,8 @@ ForOtherJdFactory5=""
 ForOtherJdFactory6=""
 
 
-################################## 定义京东赚赚每个人自己的互助码（选填） ##################################
-## 京东赚赚每个Cookie自己的互助码，可以在运行一次京东赚赚脚本（jd_jdzz）后从日志中查看
-## 约定：MyJdzz后面的编号为数字的是提供了Cookie的账号所对应的互助码，编号与Cookie编号一一对应，如MyJdzz1、MyJdzz2
-## 约定：MyJdzz后面的编号为大写字母的是未提供Cookie的账号所对应的互助码（比如你和其他人交换助力时或者多容器之间相互助力时），如MyJdzzA、MyJdzzB
-## 这里的码只是为了下面“定义京东赚赚要为哪些人助力”服务的
+################################## 定义京东赚赚互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
 MyJdzz1=""
 MyJdzz2=""
 MyJdzz3=""
@@ -274,13 +225,6 @@ MyJdzz6=""
 MyJdzzA=""
 MyJdzzB=""
 
-
-################################## 定义京东赚赚要为哪些人助力（选填） ##################################
-## 1.每个Cookie要为谁助力，填入对应MyJdzz系列变量名即可，用 @ 分隔每个变量名
-## 2.举例：ForOtherJdzz1="${MyJdzz3}@${MyJdzz4}@${MyJdzzA}"，含义是Cookie1的账户将为Cookie3、Cookie4的账户以及没有提供Cookie只提供了互助码的A用户提供助力
-## 3.Cookie定义了多少个，ForOtherJdzz系列变量就多少有效（从编号1开始计）
-## 4.可以不赋值，这种情况下，将自动随机给他人助力
-## 5.具体填法示例图：https://github.com/EvineDeng/jd-base/wiki/Picture/Sharecodes.png
 ForOtherJdzz1=""
 ForOtherJdzz2=""
 ForOtherJdzz3=""
@@ -289,11 +233,8 @@ ForOtherJdzz5=""
 ForOtherJdzz6=""
 
 
-################################## 定义疯狂的JOY每个人自己的互助码（选填） ##################################
-## 疯狂的JOY每个Cookie自己的互助码，可以在运行一次疯狂的JOY脚本（jd_crazy_joy）后从日志中查看
-## 约定：MyJoy后面的编号为数字的是提供了Cookie的账号所对应的互助码，编号与Cookie编号一一对应，如MyJoy1、MyJoy2
-## 约定：MyJoy后面的编号为大写字母的是未提供Cookie的账号所对应的互助码（比如你和其他人交换助力时或者多容器之间相互助力时），如MyJoyA、MyJoyB
-## 这里的码只是为了下面“定义京东赚赚要为哪些人助力”服务的
+################################## 定义疯狂的JOY互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
 MyJoy1=""
 MyJoy2=""
 MyJoy3=""
@@ -303,19 +244,126 @@ MyJoy6=""
 MyJoyA=""
 MyJoyB=""
 
-
-################################## 定义疯狂的JOY要为哪些人助力（选填） ##################################
-## 1.每个Cookie要为谁助力，填入对应MyJoy系列变量名即可，用 @ 分隔每个变量名
-## 2.举例：ForOtherJoy1="${MyJoy3}@${MyJoy4}@${MyJoyA}"，含义是Cookie1的账户将为Cookie3、Cookie4的账户以及没有提供Cookie只提供了互助码的A用户提供助力
-## 3.Cookie定义了多少个，ForOtherJoy系列变量就多少有效（从编号1开始计）
-## 4.可以不赋值，这种情况下，将自动随机给他人助力
-## 5.具体填法示例图：https://github.com/EvineDeng/jd-base/wiki/Picture/Sharecodes.png
 ForOtherJoy1=""
 ForOtherJoy2=""
 ForOtherJoy3=""
 ForOtherJoy4=""
 ForOtherJoy5=""
 ForOtherJoy6=""
+
+
+################################## 定义京喜农场互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
+## 京喜农场助力码为 JSON 格式因此使用单引号，json 格式如下
+## {"smp":"22bdadsfaadsfadse8a","active":"jdnc_1_btorange210113_2","joinnum":"1"}
+## 助力码获取可以通过 bash jd.sh jd_get_share_code now 命令获取
+## 注意：京喜农场 种植种子发生变化的时候，互助码也会变！！
+MyJxnc1=''
+MyJxnc2=''
+MyJxnc3=''
+MyJxnc4=''
+MyJxnc5=''
+MyJxnc6=''
+MyJxncA=''
+MyJxncB=''
+
+ForOtherJxnc1=""
+ForOtherJxnc2=""
+ForOtherJxnc3=""
+ForOtherJxnc4=""
+ForOtherJxnc5=""
+ForOtherJxnc6=""
+
+
+################################## 定义京喜农场TOKEN（选填） ##################################
+## 如果某个Cookie的账号种植的是app种子，则必须填入有效的TOKEN；而种植非app种子则不需要TOKEN
+## TOKEN的形式：{"farm_jstoken":"749a90f871adsfads8ffda7bf3b1576760","timestamp":"1610165423873","phoneid":"42c7e3dadfadsfdsaac-18f0e4f4a0cf"}
+## 因TOKEN中带有双引号，因此，变量值两侧必须由一对单引号引起来
+## TOKEN如何获取请阅读以下文件的注释：https://github.com/LXK9301/jd_scripts/blob/master/jd_jxnc.js
+TokenJxnc1=''
+TokenJxnc2=''
+TokenJxnc3=''
+TokenJxnc4=''
+TokenJxnc5=''
+TokenJxnc6=''
+
+
+################################## 定义口袋书店互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
+MyBookShop1=""
+MyBookShop2=""
+MyBookShop3=""
+MyBookShop4=""
+MyBookShop5=""
+MyBookShop6=""
+MyBookShopA=""
+MyBookShopB=""
+
+ForOtherBookShop1=""
+ForOtherBookShop2=""
+ForOtherBookShop3=""
+ForOtherBookShop4=""
+ForOtherBookShop5=""
+ForOtherBookShop6=""
+
+
+################################## 定义签到领现金互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
+MyCash1=""
+MyCash2=""
+MyCash3=""
+MyCash4=""
+MyCash5=""
+MyCash6=""
+MyCashA=""
+MyCashB=""
+
+ForOtherCash1=""
+ForOtherCash2=""
+ForOtherCash3=""
+ForOtherCash4=""
+ForOtherCash5=""
+ForOtherCash6=""
+
+
+################################## 定义2020年炸年兽活动互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
+## 仅2021年2月12日前有效
+MyNian1=""
+MyNian2=""
+MyNian3=""
+MyNian4=""
+MyNian5=""
+MyNian6=""
+MyNianA=""
+MyNianB=""
+
+ForOtherNian1=""
+ForOtherNian2=""
+ForOtherNian3=""
+ForOtherNian4=""
+ForOtherNian5=""
+ForOtherNian6=""
+
+
+################################## 定义神仙书院活动互助（选填） ##################################
+## 具体填法及要求详见：https://github.com/EvineDeng/jd-base/wiki/FAQ
+## 仅2021年2月5日前有效
+MyImmortal1=""
+MyImmortal2=""
+MyImmortal3=""
+MyImmortal4=""
+MyImmortal5=""
+MyImmortal6=""
+MyImmortalA=""
+MyImmortalB=""
+
+ForOtherImmortal1=""
+ForOtherImmortal2=""
+ForOtherImmortal3=""
+ForOtherImmortal4=""
+ForOtherImmortal5=""
+ForOtherImmortal6=""
 
 
 ################################## 定义东东超市蓝币兑换数量（选填） ##################################
@@ -347,6 +395,11 @@ export SUPERMARKET_UPGRADE=""
 ################################## 定义东东超市是否自动使用金币去抽奖（选填） ##################################
 ## 是否用金币去抽奖，默认 "false" 关闭，如需开启，请修改为 "true"
 export SUPERMARKET_LOTTERY=""
+
+
+################################## 定义东东超市是否自动参加PK队伍（选填） ##################################
+## 是否每次PK活动参加脚本作者创建的PK队伍，"true" 表示参加，"false" 表示不参加，默认为 "true"
+export JOIN_PK_TEAM=""
 
 
 ################################## 定义东东农场是否静默运行（选填） ##################################
@@ -398,6 +451,11 @@ export JOY_RUN_FLAG=""
 export JOY_TEAM_LEVEL=""
 
 
+################################## 定义宠汪汪赛跑获胜后是否推送通知（选填） ##################################
+## 控制jd_joy.js脚本宠汪汪赛跑获胜后是否推送通知，"false" 为否(不推送通知消息)，"true" 为是(即：发送推送通知消息)，默认为 "true"
+export JOY_RUN_NOTIFY=""
+
+
 ################################## 定义摇钱树是否自动将金果卖出变成金币（选填） ##################################
 ## 金币有时效，默认为 "false"，不卖出金果为金币，如想希望自动卖出，请修改为 "true"
 export MONEY_TREE_SELL_FRUIT=""
@@ -417,10 +475,9 @@ else
 fi
 
 
-################################## 定义手机狂欢城是否发送上车提醒（选填） ##################################
-## 情况请见jd_818的日志，默认为 "false"，不发送上车提醒，如想要收到提醒，请修改为 "true"
-## 暂时没有手机狂欢城活动
-export JD_818_SHAREID_NOTIFY=""
+################################## 定义京喜工厂控制哪个京东账号不运行此脚本（选填） ##################################
+## 输入"1"代表第一个京东账号不运行，多个使用 & 连接，例："1&3" 代表账号1和账号3不运行京喜工厂脚本，注：输入"0"，代表全部账号不运行京喜工厂脚本
+export DREAMFACTORY_FORBID_ACCOUNT=""
 
 
 ################################## 定义东东工厂心仪的商品（选填） ##################################
@@ -428,6 +485,11 @@ export JD_818_SHAREID_NOTIFY=""
 ## 如果你看不懂上面的话，请去东东工厂游戏中查阅攻略
 ## 心仪的商品请输入商品的全称或能唯一识别出该商品的关键字
 export FACTORAY_WANTPRODUCT_NAME=""
+
+
+################################## 定义京喜农场通知级别（选填） ##################################
+## 可用值： 0(不通知); 1(本次获得水滴>0); 2(任务执行); 3(任务执行+未种植种子)，默认为"3"
+export JXNC_NOTIFY_LEVEL="3"
 
 
 ################################## 定义取关参数（选填） ##################################
@@ -452,21 +514,32 @@ export UN_BIND_CARD_NUM=""
 export UN_BIND_STOP_CARD=""
 
 
-################################## 京东发现-看一看的视频抓包（选填） ##################################
-## 虽然脚本内置了BODY，但强烈建议有能力者自行抓包，想要使用自行抓的包有两种方式：
-## 1.按照jd_watch.js脚本中的注释说明，抓包后另存为watch.chlsj，放在和jd_watch.js同一个目录下，物理机用户建议用此方法
-## 2.按照jd_watch.js脚本中的注释说明，把抓到的包整理后填在下面（WATCH_ACCEPTBODY和WATCH_DOBODY各需40个，每个之间使用@符号隔开），Docker用户建议用此方法
-## 如需使用，请自行解除下一行注释
-# export WATCH_ACCEPTBODY=""
-# export WATCH_DOBODY=""
-
-
 ################################## 疯狂的JOY（选填） ##################################
 ## 疯狂的JOY循环助力，"true" 表示循环助力，"false" 表示不循环助力，默认 "false"
 export JDJOY_HELPSELF=""
 
 ## 疯狂的JOY京豆兑换，目前最小值为500/1000京豆，默认为 "0" 不开启京豆兑换
 export JDJOY_APPLYJDBEAN=""
+
+## 疯狂的JOY自动购买什么等级的JOY，如需要使用请自行解除注释
+# export BUY_JOY_LEVEL=""
+
+
+################################## 定义是否自动加购物车（选填） ##################################
+## 口袋书店和东东小窝有些任务需要将商品加进购物车才能完成，默认 "false" 不做这些任务，如想做，请设置为 "true"
+export PURCHASE_SHOPS=""
+
+
+################################## 你所处的经纬度（选填） ##################################
+## 神仙书院（jd_immortal.js）这个脚本所需的，你所处的经纬度，用于做逛身边好店任务，如：export JD_IMMORTAL_LATLON='{"lat":33.1, "lng":118.1}'
+## 可以使用手机自带的指南针获取所在经纬度，越精确越好，最长可保留小数点后9位数字
+export JD_IMMORTAL_LATLON=''
+
+
+################################## 京东炸年兽小程序自定义UA变量（选填） ##################################
+## 京东炸年兽（（jd_nian_wechat.js））这个脚本所需的，需要使用抓包工具自行抓包，建议填写，防止黑号。
+## 示例：export JD_WECHAT_USER_AGENT="Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15A148 MicroMessenger/7.0.20(0x17001320) NetType/WIFI Language/zh_CN"
+export JD_WECHAT_USER_AGENT=""
 
 
 ################################## Telegram 代理（选填） ##################################
@@ -480,7 +553,7 @@ export JDJOY_APPLYJDBEAN=""
 
 
 ################################## 是否添加DIY脚本（选填） ##################################
-## 如果你自己会写脚本，并且希望在每次git_pull运行完成以后，额外运行你的DIY脚本，请赋值为 "true"
+## 如果你自己会写shell脚本，并且希望在每次git_pull.sh这个脚本运行时，额外运行你的DIY脚本，请赋值为 "true"
 ## 同时，请务必将你的脚本命名为 diy.sh (只能叫这个文件名)，放在 config 目录下
 ## 我已定义好的变量，你如果想直接使用，可以参考本仓库下 git_pull.sh 文件
 EnableExtraShell=""

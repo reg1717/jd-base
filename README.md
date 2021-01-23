@@ -1,10 +1,16 @@
-## 请仔细阅读[WIKI](https://github.com/EvineDeng/jd-base/wiki)和各文件注释，90%的问题都能找到答案
+## 请仔细阅读 [WIKI](https://github.com/EvineDeng/jd-base/wiki) 和各文件注释，95%的问题都能找到答案
 
 ## 如有帮助到你，请点亮Star
 
 ## 如有二次使用，请注明来源
 
-本脚本是[https://github.com/lxk0301/jd_scripts](https://github.com/lxk0301/jd_scripts)的shell套壳工具，适用于以下系统：
+本脚本是 [https://github.com/LXK9301/jd_scripts](https://github.com/LXK9301/jd_scripts) 和 [https://github.com/shylocks/Loon](https://github.com/shylocks/Loon) 的shell套壳工具。
+
+[LXK9301/jd_scripts](https://github.com/LXK9301/jd_scripts)：主要是长期任务。
+
+[shylocks/Loon](https://github.com/shylocks/Loon)：主要是短期任务、一次性任务，正因为是短期的和一次性的，所以经常会有报错，报错就报错了，不要催我也不要去催[shylocks](https://github.com/shylocks)大佬。
+
+## 适用于以下系统
 
 - ArmBian/Debian/Ubuntu/OpenMediaVault/CentOS/Fedora/RHEL等Linux系统
 
@@ -26,13 +32,9 @@
 
 > 只记录大的更新，小修小改不记录。
 
-2021-01-06，Docker用户增加在线编辑`config.sh`和`crontab.list`功能，启动容器时直接启动，详见最新WIKI。
+2020-01-21，增加shylocks/Loon脚本。
 
-2021-01-04，Docker启动时即自动启动挂机程序。
-
-2020-12-30，增加`config.sh`和`config.sh.sample`文件差异智能比对的脚本，使用方法详见WIKI。
-
-2020-12-30，增加自动挂机功能，如需使用，在运行过一次`bash git_pull.sh`以后，输入`bash jd.sh hangup`即可（docker要进入容器后输入），然后挂机脚本就会一直运行。如果你希望每天终止旧的挂机进程，然后启动新的挂机进程，请参考sample文件夹下各个平台 的list中的挂机定时任务，添加到自己的`crontab.list`中。目前仅一个`jd_crazy_joy_coin.js`为挂机脚本。
+2021-01-15，如果本机上安装了pm2，则挂机程序以pm2启动，否则以nohup启动。
 
 ## Star趋势
 
